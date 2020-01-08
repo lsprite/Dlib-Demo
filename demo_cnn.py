@@ -5,32 +5,34 @@ import numpy
 
 # import cv2
 
+cnn_face_path = 'model/mmod_human_face_detector.dat'
 predictor_path = 'model/shape_predictor_68_face_landmarks.dat'
 face_rec_model_path = 'model/dlib_face_recognition_resnet_model_v1.dat'
 PATH_FACE = "data/face_img_database/"
 
 # 加载正脸检测器
-detector = dlib.get_frontal_face_detector()
+detector = dlib.cnn_face_detection_model_v1(cnn_face_path)
 # 加载人脸关键点检测器
 predictor = dlib.shape_predictor(predictor_path)
 # 加载人脸识别模型
 facerec = dlib.face_recognition_model_v1(face_rec_model_path)
 img = io.imread('images/chenduling.jpg')
 # 1.人脸检测(参数1表示对图片进行上采样一次，有利于检测到更多的人脸)
+# 返回的结果是一个mmod_rectangles对象。这个对象包含有2个成员变量：dlib.rectangle类，表示对象的位置；dlib.confidence，表示置信度。
 dets = detector(img, 1)
 print("Number of faces detected: {}".format(len(dets)))
 # 检测到人脸
 if len(dets) != 0:
-    biggest_face = dets[0]
+    biggest_face = dets[0].rect
     # 取占比最大的脸
     maxArea = 0
     for det in dets:
-        w = det.right() - det.left()
-        h = det.top() - det.bottom()
+        w = det.rect.right() - det.rect.left()
+        h = det.rect.top() - det.rect.bottom()
         if w * h > maxArea:
-            biggest_face = det
+            biggest_face = det.rect
             maxArea = w * h
-    shape = predictor(img, det)
+    shape = predictor(img, det.rect)
     # print("---shape:",shape)
     # landmark = numpy.matrix([[p.x, p.y] for p in shape.parts()])
     # print("landmark:",landmark)
