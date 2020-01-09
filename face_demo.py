@@ -12,7 +12,7 @@ image = face_recognition.load_image_file("nba1996.jpg")
 face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=1)
 # 人脸特征点识别
 face_landmarks_list = face_recognition.face_landmarks(image, face_locations)
-print len(face_landmarks_list)
+print(len(face_landmarks_list))
 # 图片处理、展示
 pil_image = Image.fromarray(image)
 d = ImageDraw.Draw(pil_image)
